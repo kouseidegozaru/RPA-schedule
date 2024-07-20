@@ -1,0 +1,32 @@
+
+FUNCTION TableSort GLOBAL
+    SET SortTable TO DataTable
+    SET RecordCnt TO 0
+    SET RankCnt TO 0
+    LOOP FOREACH CurrentRow IN SortTable
+        LOOP FOREACH TargetRow IN SortTable
+            IF CurrentRow['Time'] > TargetRow['Time'] THEN
+                SET RankCnt TO RankCnt + 1
+            END
+        END
+        Variables.ModifyDataTableItem DataTable: SortTable ColumnNameOrIndex: $'''Rank''' RowIndex: RecordCnt Value: RankCnt
+        SET RankCnt TO 0
+        SET RecordCnt TO RecordCnt + 1
+    END
+    SET RecordCnt TO 0
+    SET UpdateCnt TO 0
+    LOOP FOREACH TargetRow IN SortTable
+        LOOP FOREACH CurrentRow IN SortTable
+            IF CurrentRow['Rank'] = RecordCnt THEN
+                Variables.ModifyDataTableItem DataTable: DataTable ColumnNameOrIndex: $'''Time''' RowIndex: UpdateCnt Value: CurrentRow['Time']
+                Variables.ModifyDataTableItem DataTable: DataTable ColumnNameOrIndex: $'''Flow''' RowIndex: UpdateCnt Value: CurrentRow['Flow']
+                SET UpdateCnt TO UpdateCnt + 1
+            END
+        END
+        SET RecordCnt TO RecordCnt + 1
+    END
+    SET RankCnt TO 0
+    SET TargetRow TO 0
+    SET CurrentRow TO 0
+    SET SortTable TO 0
+END FUNCTION

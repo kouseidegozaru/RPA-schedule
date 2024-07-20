@@ -1,0 +1,13 @@
+
+FUNCTION LoadSchedule GLOBAL
+    SET FlowList TO []
+    File.ReadFromCSVFile.ReadCSV CSVFile: $'''C:\\Users\\ThisIsYourName\\AppData\\Local\\Programs\\RPAschedule\\resources\\csvFiles\\schedule.csv''' Encoding: File.CSVEncoding.UTF8 TrimFields: True FirstLineContainsColumnNames: True ColumnsSeparator: File.CSVColumnsSeparator.SystemDefault CSVTable=> ScheduleTable
+    File.ReadFromCSVFile.ReadCSV CSVFile: $'''C:\\Users\\ThisIsYourName\\AppData\\Local\\Programs\\RPAschedule\\resources\\csvFiles\\name.csv''' Encoding: File.CSVEncoding.UTF8 TrimFields: True FirstLineContainsColumnNames: True ColumnsSeparator: File.CSVColumnsSeparator.SystemDefault CSVTable=> NameTable
+    LOOP FOREACH CurrentItem2 IN ScheduleTable
+        Variables.FindOrReplaceInDataTable.FindItemInDataTableByColumnIndex DataTable: NameTable AllMatches: True ValueToFind: CurrentItem2['nameID'] MatchCase: False MatchEntireCellContents: False ColumnNameOrIndex: $'''ID''' DataTableMatches=> DataTableMatches
+        SET targetNameRow TO DataTableMatches[0]['Row']
+        Text.ToNumber Text: targetNameRow Number=> targetNameRow
+        SET targetNameRow TO NameTable[targetNameRow]['name']
+        Variables.AddItemToList Item: [CurrentItem2['time'], targetNameRow, CurrentItem2['type']] List: FlowList
+    END
+END FUNCTION

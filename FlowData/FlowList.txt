@@ -1,0 +1,24 @@
+
+FUNCTION FlowList GLOBAL
+    SET ER TO $'''完了'''
+    SWITCH CurrentData['Flow']
+        CASE = $'''業務日報システム'''
+            BLOCK er
+ON BLOCK ERROR
+    SET ER TO $'''エラー'''
+END
+                @@flowname: '業務日報日次'
+External.RunFlow FlowId: '931d1677-6af4-4638-a80a-729bbb63e26c'
+            END
+        DISABLE CASE = $'''日別実績'''
+            @@flowname: '部門日別実績グラフ'
+DISABLE External.RunFlow FlowId: '42decf34-474b-4144-843e-f077c3a73a64'
+        DISABLE CASE = $'''a'''
+            DISABLE Display.ShowMessageDialog.ShowMessage Title: $'''a''' Message: $'''a%CurrentData['Flow']%''' Icon: Display.Icon.None Buttons: Display.Buttons.OK DefaultButton: Display.DefaultButton.Button1 IsTopMost: False ButtonPressed=> ButtonPressed
+        DISABLE CASE = $'''b'''
+            DISABLE Display.ShowMessageDialog.ShowMessage Title: $'''as''' Message: $'''as%CurrentData['Flow']%''' Icon: Display.Icon.None Buttons: Display.Buttons.OK DefaultButton: Display.DefaultButton.Button1 IsTopMost: False ButtonPressed=> ButtonPressed
+        DISABLE CASE = $'''c'''
+            DISABLE Display.ShowMessageDialog.ShowMessage Title: $'''asd''' Message: $'''asd%CurrentData['Flow']%''' Icon: Display.Icon.None Buttons: Display.Buttons.OK DefaultButton: Display.DefaultButton.Button1 IsTopMost: False ButtonPressed=> ButtonPressed
+    END
+    CALL ErrorLog
+END FUNCTION

@@ -1,0 +1,11 @@
+
+FUNCTION ErrorLog GLOBAL
+    SET ER TO $'''完了'''
+    DateTime.GetCurrentDateTime.Local DateTimeFormat DateTime.DateTimeFormat.DateAndTime CurrentDateTime= LogDateTime
+    File.WriteToCSVFile.WriteCSV VariableToWrite [ER, CurrentData['Flow'], LogDateTime] CSVFile $'''YourLogFilePath.csv''' CsvFileEncoding File.CSVEncoding.UTF8 IncludeColumnNames False IfFileExists File.IfFileExists.Append ColumnsSeparator File.CSVColumnsSeparator.SystemDefault
+    IF ER = $'''エラー''' THEN
+        ERROR = LastError
+        File.WriteToCSVFile.WriteCSV VariableToWrite [LastError] CSVFile $'''YourLogFilePath.csv''' CsvFileEncoding File.CSVEncoding.UTF8 IncludeColumnNames False IfFileExists File.IfFileExists.Append ColumnsSeparator File.CSVColumnsSeparator.SystemDefault
+    END
+    SET ER TO $'''完了'''
+END FUNCTION

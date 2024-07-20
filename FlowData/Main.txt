@@ -1,0 +1,13 @@
+DateTime.GetCurrentDateTime.Local DateTimeFormat: DateTime.DateTimeFormat.DateOnly CurrentDateTime=> StartWorkDate
+DateTime.GetCurrentDateTime.Local DateTimeFormat: DateTime.DateTimeFormat.DateAndTime CurrentDateTime=> StartWorktime
+LOOP WHILE (0) = (0)
+    CALL DataTable
+    CALL TableSort
+    LOOP FOREACH CurrentData IN DataTable
+        IF StartWorktime <= CurrentData['Time'] THEN
+            CALL Timer
+            CALL FlowList
+        END
+    END
+    CALL WaitNextDay
+END

@@ -1,0 +1,59 @@
+
+FUNCTION DataTable GLOBAL
+    Scripting.RunVBScript.RunVBScript VBScriptCode: $'''Option Explicit
+
+Dim dt
+dt = Now
+
+Dim weekdayNumber
+weekdayNumber = Weekday(dt) 
+
+WScript.Echo weekdayNumber''' ScriptOutput=> VBScriptOutput
+    Text.ToNumber Text: VBScriptOutput Number=> weekNumber
+    Variables.CreateNewDatatable InputTable: { ^['Time', 'Flow', 'Rank'], [$'''''', $'''''', $''''''] } DataTable=> DataTable
+    Variables.DeleteRowFromDataTable DataTable: DataTable RowIndex: 0
+    CALL FlowTimeList
+    Text.CropText.CropTextBeforeFlag Text: StartWorkDate ToFlag: $''' 0:00:00''' IgnoreCase: False CroppedText=> DateText IsFlagFound=> IsFlagFound
+    LOOP FOREACH CurrentItem IN FlowList
+        **REGION 該当の曜日か
+        IF CurrentItem[2] = weekNumber THEN
+            Text.ConvertTextToDateTime.ToDateTime Text: $'''%DateText% %CurrentItem[0]%''' DateTime=> NewDate
+            Variables.AddRowToDataTable.AppendRowToDataTable DataTable: DataTable RowToAdd: [NewDate, CurrentItem[1], 0]
+        END
+        **ENDREGION
+        **REGION 毎日実行であるか
+        IF CurrentItem[2] = 0 THEN
+            Text.ConvertTextToDateTime.ToDateTime Text: $'''%DateText% %CurrentItem[0]%''' DateTime=> NewDate
+            Variables.AddRowToDataTable.AppendRowToDataTable DataTable: DataTable RowToAdd: [NewDate, CurrentItem[1], 0]
+        END
+        **ENDREGION
+        **REGION 月末であるか
+        IF CurrentItem[2] = 8 THEN
+            **REGION 今月の月末日の取得
+            DateTime.Add DateTime: StartWorkDate TimeToAdd: 1 TimeUnit: DateTime.TimeUnit.Months ResultedDate=> nextMonth
+            Text.GetSubtext.GetSubtextFromStartTo Text: nextMonth NumberOfChars: 8 Subtext=> nextMonth
+            Text.ConvertTextToDateTime.ToDateTime Text: $'''%nextMonth%01''' DateTime=> nextMonth
+            DateTime.Add DateTime: nextMonth TimeToAdd: -1 TimeUnit: DateTime.TimeUnit.Days ResultedDate=> lastMonthDate
+            **ENDREGION
+            IF StartWorkDate = lastMonthDate THEN
+                Text.ConvertTextToDateTime.ToDateTime Text: $'''%DateText% %CurrentItem[0]%''' DateTime=> NewDate
+                Variables.AddRowToDataTable.AppendRowToDataTable DataTable: DataTable RowToAdd: [NewDate, CurrentItem[1], 0]
+            END
+        END
+        **ENDREGION
+        **REGION 該当の日付であるか
+        Text.GetSubtext.GetSubtextFromStartTo Text: CurrentItem[2] NumberOfChars: 1 Subtext=> isDate
+        IF isDate = $'''-''' THEN
+            Text.CropText.CropTextAfterFlag Text: CurrentItem[2] FromFlag: $'''-''' IgnoreCase: False CroppedText=> isDate
+            **REGION 対象日の取得
+            Text.GetSubtext.GetSubtextFromStartTo Text: StartWorkDate NumberOfChars: 8 Subtext=> currntYearMonth
+            Text.ConvertTextToDateTime.ToDateTime Text: $'''%currntYearMonth%%isDate%''' DateTime=> isDate
+            **ENDREGION
+            IF StartWorkDate = isDate THEN
+                Text.ConvertTextToDateTime.ToDateTime Text: $'''%DateText% %CurrentItem[0]%''' DateTime=> NewDate
+                Variables.AddRowToDataTable.AppendRowToDataTable DataTable: DataTable RowToAdd: [NewDate, CurrentItem[1], 0]
+            END
+        END
+        **ENDREGION
+    END
+END FUNCTION

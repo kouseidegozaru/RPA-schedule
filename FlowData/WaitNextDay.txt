@@ -1,0 +1,10 @@
+
+FUNCTION WaitNextDay GLOBAL
+    DateTime.GetCurrentDateTime.Local DateTimeFormat: DateTime.DateTimeFormat.DateAndTime CurrentDateTime=> CurrentDateTime
+    DateTime.Add DateTime: StartWorkDate TimeToAdd: 1 TimeUnit: DateTime.TimeUnit.Days ResultedDate=> StartWorkDate
+    DateTime.Subtract FromDate: StartWorkDate SubstractDate: CurrentDateTime TimeUnit: DateTime.DifferenceTimeUnit.Seconds TimeDifference=> WaitTime
+    IF WaitTime < 0 THEN
+        SET WaitTime TO 0
+    END
+    WAIT WaitTime
+END FUNCTION

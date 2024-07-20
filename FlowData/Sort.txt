@@ -1,0 +1,45 @@
+
+FUNCTION Sort GLOBAL
+    SET FinishFlag TO $'''False'''
+    SET pivotArray TO []
+    SET GroupArray TO []
+    SET GroupCnt TO 0
+    Variables.AddItemToList Item: 0 List: pivotArray
+    Variables.AddItemToList Item: 0 List: GroupArray
+    # 初期値の設定--
+    Variables.AddItemToList Item: 0 List: GroupArray
+    SET GroupArray[1] TO DataTable
+    Variables.AddItemToList Item: 0 List: pivotArray
+    SET pivotArray[1] TO GroupArray[1][0]['Time']
+    # --初期値の設定
+    LOOP WHILE (FinishFlag) <> ($'''True''')
+        SET LeftMemory TO []
+        SET RightMemory TO []
+        SET GroupCnt TO GroupCnt + 1
+        SET FinishCnt TO 0
+        LOOP FOREACH TargetValue IN GroupArray[GroupCnt]
+            IF TargetValue['Time'] < pivotArray[GroupCnt] THEN
+                Variables.AddItemToList Item: TargetValue List: LeftMemory
+                SET FinishCnt TO FinishCnt + 1
+            ELSE
+                Variables.AddItemToList Item: TargetValue List: RightMemory
+            END
+        END
+        # GroupArray[Cnt]のレコード数が一の場合は継承
+        IF FinishCnt < 2 THEN
+            Variables.AddItemToList Item: TargetValue List: LeftMemory
+        END
+        # Leftの設定
+        SET TargetLeftCnt TO GroupCnt * 2
+        Variables.AddItemToList Item: 0 List: GroupArray
+        SET GroupArray[TargetLeftCnt] TO LeftMemory
+        Variables.AddItemToList Item: 0 List: pivotArray
+        SET pivotArray[TargetLeftCnt] TO LeftMemory[0]['Time']
+        # Rightの設定
+        SET TargetRightCnt TO GroupCnt * 2 + 1
+        Variables.AddItemToList Item: 0 List: GroupArray
+        SET GroupArray[TargetRightCnt] TO RightMemory
+        Variables.AddItemToList Item: 0 List: pivotArray
+        SET pivotArray[TargetRightCnt] TO RightMemory[0]['Time']
+    END
+END FUNCTION

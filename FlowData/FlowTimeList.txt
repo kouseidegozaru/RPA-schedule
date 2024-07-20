@@ -1,0 +1,32 @@
+
+FUNCTION FlowTimeList GLOBAL
+    SET FlowList TO []
+    /# 重要
+
+追加するリストの要素
+①実行開始時間
+②フローを呼び出すための名前です。サブフローの「FlowList」に対応付けてください
+③実行する種別番号です例を以下に記します
+　0 毎日実行
+　1 日曜日のみ
+    2 月曜日のみ
+    3 火曜日のみ
+　　　・・・
+　7 土曜日のみ
+　8 月末のみ
+　-日付 日付を指定して実行(例　-25　は毎月25日のみ実行)
+#/
+    Variables.AddItemToList Item: ['17:26:00', '日別実績', 0] List: FlowList
+    Variables.AddItemToList Item: ['8:30:00', '業務日報システム', 0] List: FlowList
+    Variables.AddItemToList Item: ['13:30:00', '食堂メニュー更新', 7] List: FlowList
+    Variables.AddItemToList Item: ['15:39:00', 'b', 1] List: FlowList
+    Variables.AddItemToList Item: ['15:31:00', 'c', 2] List: FlowList
+    Variables.AddItemToList Item: ['14:23:02', 'd', 3] List: FlowList
+    Variables.AddItemToList Item: ['15:39:02', 'e', 4] List: FlowList
+    Variables.AddItemToList Item: ['15:31:02', 'f', 5] List: FlowList
+    Variables.AddItemToList Item: ['14:23:05', 'g', 6] List: FlowList
+    Variables.AddItemToList Item: ['15:39:05', 'h', 7] List: FlowList
+    Variables.AddItemToList Item: ['15:31:05', 'i', 0] List: FlowList
+    Variables.AddItemToList Item: ['15:31:05', 'ああああ', -27] List: FlowList
+    Variables.AddItemToList Item: ['15:31:05', 'iiiiii', 8] List: FlowList
+END FUNCTION

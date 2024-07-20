@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>RPAスケジューラ</title>
+    <link rel="stylesheet" type="text/css" href="./styles/style.css">
+  </head>
+  <body>
+    <div id="typeName"></div>
+    <a href="../home/index.html">戻る</a>
+    <hr>
+
+    <div id="table-container"></div>
+
+    <hr>
+    <div id="inputArea">
+      <div id="taskArea">
+        <p>タスク名</p>
+        <div id="selectName" class="selectdiv"></div>
+      </div>
+      <div id="timeArea">
+        <p>開始時間</p>
+        <div class="timeInputContainer">
+      </div>
+        <input type="time" id="timeInput" name="timeInput" min="00:00" max="23:59" required="">
+    </div>
+      <button id="addButton">追加</button>
+    </div>
+
+    <script type="text/javascript" src="./js/formScript.js"></script>
+  </body>
+</html>
